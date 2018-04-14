@@ -1,0 +1,50 @@
+<!--
+  ~ Copyright (c) 2018 Razeware LLC
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
+  ~ distribute, sublicense, create a derivative work, and/or sell copies of the
+  ~ Software in any work that is designed, intended, or marketed for pedagogical or
+  ~ instructional purposes related to programming, coding, application development,
+  ~ or information technology.  Permission for such use, copying, modification,
+  ~ merger, publication, distribution, sublicensing, creation of derivative works,
+  ~ or sale is expressly withheld.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  -->
+
+<resources>
+  <string name="app_name">IngrediSearch</string>
+  <string name="search_title">Search for ingredients</string>
+  <string name="results_title">Results</string>
+  <string name="favorites_title">Favorites</string>
+  <string name="recipe_title">Recipe</string>
+  <string name="main_title">Welcome to IngrediSearch!</string>
+  <string name="search">Search</string>
+  <string name="search_query_required">Please, input one or more ingredients!</string>
+  <string name="search_header">Enter the ingredients</string>
+  <string name="favorites">Favorites</string>
+  <string name="search_hint">eggs, ham, cheese</string>
+  <string name="error">An error occurred</string>
+  <string name="retry">Retry</string>
+  <string name="noresults">No results for your query</string>
+  <string name="nofavorites">No favorites yet</string>
+  <string name="add_remove_favorite">Add or remove favorite</string>
+  <string name="recipe_image">Recipe image</string>
+  <string name="loading">Loading&#8230;</string>
+</resources>
