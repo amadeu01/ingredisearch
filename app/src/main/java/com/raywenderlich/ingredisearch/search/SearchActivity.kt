@@ -29,26 +29,50 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.ingredisearch
+package com.raywenderlich.ingredisearch.search
 
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.view.inputmethod.InputMethodManager
+import com.raywenderlich.ingredisearch.ChildActivity
+import com.raywenderlich.ingredisearch.R
+import com.raywenderlich.ingredisearch.searchresults.searchResultsIntent
 import kotlinx.android.synthetic.main.activity_search.*
 
-class SearchActivity : ChildActivity() {
+class SearchActivity : ChildActivity(), SearchPresenter.View {
+
+  private val presenter: SearchPresenter = SearchPresenter()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_search)
 
+    presenter.attachView(this)
+
     searchButton.setOnClickListener {
-      val query = ingredients.text.toString().trim()
-      if (query.isBlank()) {
-        Snackbar.make(searchButton, getString(R.string.search_query_required), Snackbar
-            .LENGTH_LONG).show()
-      } else {
-        startActivity(searchResultsIntent(query))
-      }
+      val query = ingredients.text.toString()
+      presenter.search(query)
     }
+  }
+
+  override fun onDestroy() {
+    presenter.detachView()
+    super.onDestroy()
+  }
+
+  override fun showQueryRequiredMessage() {
+    val view = this.currentFocus
+    if (view != null) {
+      val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+      inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    Snackbar.make(searchButton, getString(R.string.search_query_required), Snackbar
+            .LENGTH_LONG).show()
+  }
+
+  override fun showSearchResults(query: String) {
+    startActivity(searchResultsIntent(query))
   }
 }

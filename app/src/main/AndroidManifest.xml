@@ -51,13 +51,13 @@
       </intent-filter>
     </activity>
     <activity
-        android:name=".SearchActivity"
+        android:name=".search.SearchActivity"
         android:label="@string/search_title"/>
     <activity
-        android:name=".SearchResultsActivity"
+        android:name=".searchresults.SearchResultsActivity"
         android:label="@string/results_title"/>
     <activity
-        android:name=".FavoritesActivity"
+        android:name=".favorite.FavoritesActivity"
         android:label="@string/favorites_title"/>
     <activity
         android:name=".RecipeActivity"
