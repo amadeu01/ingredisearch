@@ -2,7 +2,8 @@ package com.raywenderlich.ingredisearch.searchresults
 
 import com.raywenderlich.ingredisearch.BasePresenter
 import com.raywenderlich.ingredisearch.Recipe
-import com.raywenderlich.ingredisearch.RecipeRepository
+import com.raywenderlich.ingredisearch.data.RecipeRepository
+import com.raywenderlich.ingredisearch.data.RepositoryCallback
 
 class SearchResultsPresenter(val repository: RecipeRepository) :
         BasePresenter<SearchResultsPresenter.View>() {
@@ -10,11 +11,11 @@ class SearchResultsPresenter(val repository: RecipeRepository) :
 
     fun search(query: String) {
         view?.showLoading()
-        repository.getRecipes(query, object : RecipeRepository.RepositoryCallback<List<Recipe>> {
-            override fun onSuccess(recipes: List<Recipe>?) {
-                this@SearchResultsPresenter.recipes = recipes
-                if (recipes != null && recipes.isNotEmpty()) {
-                    view?.showRecipes(recipes)
+        repository.getRecipes(query, object : RepositoryCallback<List<Recipe>> {
+            override fun onSuccess(data: List<Recipe>?) {
+                this@SearchResultsPresenter.recipes = data
+                if (data != null && data.isNotEmpty()) {
+                    view?.showRecipes(data)
                 } else {
                     view?.showEmptyRecipes()
                 }

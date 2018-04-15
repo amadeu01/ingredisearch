@@ -1,79 +1,163 @@
-/*
- * Copyright (c) 2018 Razeware LLC
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
- * distribute, sublicense, create a derivative work, and/or sell copies of the
- * Software in any work that is designed, intended, or marketed for pedagogical or
- * instructional purposes related to programming, coding, application development,
- * or information technology.  Permission for such use, copying, modification,
- * merger, publication, distribution, sublicensing, creation of derivative works,
- * or sale is expressly withheld.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
+apply plugin: "kotlin-kapt"
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "jacoco"
+apply plugin: "pmd"
+apply plugin: "findbugs"
+apply plugin: "checkstyle"
+
+kapt {
+    mapDiagnosticLocations = true
+    generateStubs = true
+}
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-  compileSdkVersion 27
-  defaultConfig {
-    applicationId "com.raywenderlich.ingredisearch"
-    minSdkVersion 16
-    targetSdkVersion 27
-    versionCode 1
-    versionName "1.0"
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.raywenderlich.ingredisearch"
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-    vectorDrawables.useSupportLibrary = true
+        vectorDrawables.useSupportLibrary = true
 
-    buildConfigField 'String', 'FOOD2FORK_API_KEY', keystoreProperties['FOOD2FORK_API_KEY']
-  }
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        buildConfigField 'String', 'FOOD2FORK_API_KEY', keystoreProperties['FOOD2FORK_API_KEY']
     }
-  }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+                events "passed", "skipped", "failed", "standardOut", "standardError"
+                outputs.upToDateWhen {false}
+                showStandardStreams = true
+            }
+        }
+    }
 }
 
 dependencies {
-  implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation 'com.android.support:appcompat-v7:27.0.2'
-  implementation 'com.android.support:design:27.0.2'
-  testImplementation 'junit:junit:4.12'
-  androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
-    exclude group: 'com.android.support', module: 'support-annotations'
-  })
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-  implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-  implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-  implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
-  implementation 'com.github.bumptech.glide:glide:4.2.0'
-  annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    kapt 'com.github.bumptech.glide:compiler:4.7.1'
 
+    testImplementation 'com.nhaarman:mockito-kotlin-kt1.1:1.5.0'
+    testImplementation 'junit:junit:4.12'
+
+}
+
+jacoco {
+    toolVersion = "0.8.0"
+    reportsDir = file("$buildDir/jacocoReports")
+}
+
+android.applicationVariants.all { variant ->
+    def variantName = variant.name.capitalize()
+    def autoGenerated = ['**/R.class',
+                         '**/R$*.class',
+                         '**/Manifest*.*',
+                         'android/**/*.*',
+                         '**/BuildConfig.*',
+                         '**/*$ViewBinder*.*',
+                         '**/*$ViewInjector*.*',
+                         '**/Lambda$*.class',
+                         '**/Lambda.class',
+                         '**/*Lambda.class',
+                         '**/*Lambda*.class']
+
+    // Generates Lint reports based off the source code.
+    variant.assemble.dependsOn "lint$variantName"
+
+    /**
+     * Generates Lint reports based off the source code.
+     */
+    task("pmd$variantName", type: Pmd, dependsOn: "assemble$variantName") {
+        group "Reporting"
+        description "Generate ${variantName} Pmd reports."
+
+        ignoreFailures = true
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+
+        source = files(variant.javaCompiler.source)
+        classpath = files(configurations.compile.files)
+    }
+
+    /**
+     * Generates Jacoco coverage reports based off the unit tests.
+     */
+    task("jacoco${variantName}Report", type: JacocoReport, dependsOn: "test${variantName}UnitTest") {
+        group "Reporting"
+        description "Generate ${variantName} Jacoco coverage reports."
+
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+
+        // variant.javaCompile.source does not work
+        // traverses from starting point
+        sourceDirectories = files(android.sourceSets.main.java.srcDirs)
+        executionData = files("${buildDir}/jacoco/test${variantName}UnitTest.exec")
+        classDirectories = fileTree(dir: variant.javaCompiler.destinationDir, excludes: autoGenerated)
+    }
+
+    /**
+     * Generates FindBugs reports based off the source code.
+     */
+    task("findbugs$variantName", type: FindBugs, dependsOn: "assemble$variantName") {
+        group "Reporting"
+        description "Generate ${variantName} Findbugs reports."
+
+        ignoreFailures = true
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+
+        effort = "max"
+        reportLevel = "low"
+        source = files(variant.javaCompiler.source)
+        classpath = files(configurations.compile.files)
+        classes = fileTree(dir: variant.javaCompiler.destinationDir, excludes: autoGenerated)
+    }
+
+    /**
+     * Generates Checkstyle reports based off the source code.
+     */
+    task("checkstyle$variantName", type: Checkstyle, dependsOn: "assemble$variantName") {
+        group "Reporting"
+        description "Generate ${variantName} Checkstyle reports."
+
+        ignoreFailures = true
+        reports.html.enabled = true
+
+        configFile = rootProject.file("./.buildscript/checkstyle-hard.xml")
+        source = files(android.sourceSets.main.java.srcDirs)
+        classpath = files(configurations.compile.files)
+    }
 }
