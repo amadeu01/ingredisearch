@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/amadeu01/ingredisearch.svg?branch=master)](https://travis-ci.org/amadeu01/ingredisearch)
+
 # Ingredi Search
 This is just a project to follow [this](https://www.raywenderlich.com/174137/android-unit-testing-with-mockito) tutorial
 
