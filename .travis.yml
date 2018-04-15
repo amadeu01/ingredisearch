@@ -7,7 +7,7 @@ before_cache:
 env:
   global:
     - ANDROID_API_LEVEL=27
-    - EMULATOR_API_LEVEL=26
+    - EMULATOR_API_LEVEL=25
     - ADB_INSTALL_TIMEOUT=5
     - ANDROID_ABI=armeabi-v7a
     
@@ -22,6 +22,7 @@ android:
     - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
+    - addon-google_apis-google-$ANDROID_API_LEVEL
     - sys-img-armeabi-v7a-android-$ANDROID_API_LEVEL
     - sys-img-armeabi-v7a-android-$EMULATOR_API_LEVEL
   licenses:
