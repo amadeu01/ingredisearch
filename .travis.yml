@@ -9,6 +9,7 @@ env:
     - ANDROID_API_LEVEL=27
     - EMULATOR_API_LEVEL=26
     - ADB_INSTALL_TIMEOUT=5
+    - ANDROID_ABI=armeabi-v7a
     
 android:
   components:
