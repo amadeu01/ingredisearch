@@ -21,6 +21,8 @@ android:
     - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
+    - sys-img-armeabi-v7a-android-$ANDROID_API_LEVEL
+    - sys-img-armeabi-v7a-android-$EMULATOR_API_LEVEL
   licenses:
     - android-sdk-license-.+
     - google-gdk-license-.+
@@ -41,7 +43,7 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - "./gradlew clean build --stacktrace"
+  - "./gradlew clean build jacocoDebugReport --stacktrace"
   - "./gradlew connectedCheck"
 
 before_deploy:
@@ -52,7 +54,7 @@ before_deploy:
   - cd app/build/outputs/apk/release/
   - ls -all
   - echo $ANDROID_HOME
-  - "${ANDROID_HOME}/build-tools/27.1.1/zipalign -v 4 app-release-unsigned.apk Rapadura.apk"
+  - "${ANDROID_HOME}/build-tools/27.1.1/zipalign -v 4 app-release-unsigned.apk Ingredisearch.apk"
 
 deploy:
   provider: releases
@@ -61,8 +63,11 @@ deploy:
   description: "Deployed by travis-ci"
 
   on:
-    repo: amadeu01/Rapadura
+    repo: amadeu01/ingredisearch
     tags: true
     jdk: oraclejdk8
   api_key:
     secure: "mOq3vQeTK8IXLAAB8TC0V58Blp9Ql7cIKAY1gmLws20uRPyWMxhLZPkU3OuEnwTt7/Eya94IetFqx+HKc2bqV9tvTk5KXJjqNcn2V8zHub65I+WqmfbQTM3JrIuyTEQXr6bnRKqghFhKhKSGBI+w37RWSQ5kIAh5qShg9mBNbSs7ZP7OkC5+eNJgQT1OHnufDrjrhks4M5CNGqWgK6vZhb7AHg8e5ay8uwF6Ax4+mh8qsSJOi+VGgz5DDNbx9vg/pOZbWPP+wA1Nwx+SSsSF2Gb4WgreF7tXScDPupd0ABkMcsS/j6aIDqgCFrFMz/0xW8tQeVV6qityFJTay5mVZp6SdMztjKl1Np1ezeWGe2ZUpBnNjmCZEmiwpWOjW2KnpixHBudkQHyF2HMGgZ0jDkDog2PFC39A6hCBRx2o72O7PaHKVTvLAliIVnmsaL38QFqmTDAiuiu8t+nbauEdJazABe+Q41W4USBD7IL/N/KjcKVY15uRHrGSIYOMgItnVBY/3TFWgNji7e9FIcIw+j2T44fv7ZZ6q+uhOcobxHZXQ8OI4aVFL3agUpmH+YFi5ZBayqagWjSmqu8Ct75PrwX1uG5DDspC6PvxVN7QxDSBT97No4WDPNxtcUK0WBkX/eHMCv+drSX4yo5moZdNtnTR3eoz+QMRevmikI1uT2o="
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
