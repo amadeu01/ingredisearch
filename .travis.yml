@@ -8,7 +8,7 @@ env:
   global:
     - ANDROID_API_LEVEL=27
     - EMULATOR_API_LEVEL=24
-    - ADB_INSTALL_TIMEOUT=5
+    - ADB_INSTALL_TIMEOUT=15
     - ANDROID_ABI=armeabi-v7a
     
 android:
@@ -17,8 +17,6 @@ android:
     - platform-tools
     - build-tools-26.0.1
     - android-27
-    - android-$ANDROID_API_LEVEL
-    - android-$EMULATOR_API_LEVEL
     - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
