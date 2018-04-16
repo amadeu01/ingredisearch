@@ -35,8 +35,8 @@ cache:
   - "$HOME/.gradle/wrapper/"
 
 before_install:
-  - touch local.properties
-  - echo "FOOD2FORK_API_KEY="$FOOD2FORK_API_KEY"" >> local.properties
+  - touch keystore.properties
+  - echo "FOOD2FORK_API_KEY="$FOOD2FORK_API_KEY"" >> keystore.properties
   - chmod +x gradlew
   - "./gradlew dependencies || true"
 
