@@ -7,7 +7,7 @@ before_cache:
 env:
   global:
     - ANDROID_API_LEVEL=27
-    - EMULATOR_API_LEVEL=24
+    - EMULATOR_API_LEVEL=23
     - ADB_INSTALL_TIMEOUT=15
     - ANDROID_ABI=armeabi-v7a
     
@@ -21,6 +21,8 @@ android:
     - addon-google_apis-google-$ANDROID_API_LEVEL
     - sys-img-armeabi-v7a-android-$ANDROID_API_LEVEL
     - sys-img-armeabi-v7a-android-$EMULATOR_API_LEVEL
+    - addon-google_apis-google-23
+    - sys-img-x86_64-google_apis-23
     - build-tools-26.0.1
     - android-27
 
@@ -32,14 +34,14 @@ cache:
 
 before_install:
   - touch /home/travis/.android/repositories.cfg
-  - ls $ANDROID_HOME/build-tools/
   - which sdkmanager
   - yes | sdkmanager --update
-  - sdkmanager --list
-  - sdkmanager --version
+  - yes | sdkmanager "system-images;android-23;google_apis;x86_64"
   - yes | sdkmanager "build-tools;27.0.1"
   - yes | sdkmanager "build-tools;27.0.3"
   - yes | sdkmanager --licenses
+  - which avdmanager
+  - sdkmanager --list
   - touch keystore.properties
   - echo "FOOD2FORK_API_KEY="$FOOD2FORK_API_KEY"" >> keystore.properties
   - chmod +x gradlew
