@@ -31,9 +31,10 @@ cache:
   - "$HOME/.android/build-cache"
 
 before_install:
-  - ls ${ANDROID_HOME}/build-tools/ -all
+  - touch /home/travis/.android/repositories.cfg
+  - ls $ANDROID_HOME/build-tools/
   - which sdkmanager
-  - sdkmanager --update
+  - yes | sdkmanager --update
   - sdkmanager --list
   - sdkmanager --version
   - yes | sdkmanager "build-tools;27.0.1"
