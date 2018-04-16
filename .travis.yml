@@ -23,9 +23,6 @@ android:
     - sys-img-armeabi-v7a-android-$EMULATOR_API_LEVEL
     - build-tools-26.0.1
     - android-27
-  licenses:
-    - android-sdk-license-.+
-    - google-gdk-license-.+
 
 cache:
   directories:
