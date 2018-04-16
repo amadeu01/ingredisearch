@@ -38,7 +38,8 @@ cache:
 before_install:
   - yes | sdkmanager "platforms;android-27"
   - echo yes | sdkmanager "build-tools;27.0.1"
-  - yes | sudo sdkmanager --licenses
+  - echo yes | sdkmanager "build-tools;27.0.3"
+  - yes | sdkmanager --licenses
   - touch keystore.properties
   - echo "FOOD2FORK_API_KEY="$FOOD2FORK_API_KEY"" >> keystore.properties
   - chmod +x gradlew
