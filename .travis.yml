@@ -15,7 +15,7 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-27.1.1
+    - build-tools-26.0.2
     - android-19
     - android-$ANDROID_API_LEVEL
     - android-$EMULATOR_API_LEVEL
@@ -35,6 +35,7 @@ cache:
   - "$HOME/.gradle/wrapper/"
 
 before_install:
+  - yes | sdkmanager "platforms;android-27"
   - touch keystore.properties
   - echo "FOOD2FORK_API_KEY="$FOOD2FORK_API_KEY"" >> keystore.properties
   - chmod +x gradlew
