@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'jacoco-android'
+apply plugin: "jacoco"
 apply plugin: "pmd"
 apply plugin: "findbugs"
 apply plugin: "checkstyle"
@@ -36,6 +36,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
         }
     }
 
@@ -154,5 +159,115 @@ android.applicationVariants.all { variant ->
         configFile = rootProject.file("./.buildscript/checkstyle-hard.xml")
         source = files(android.sourceSets.main.java.srcDirs)
         classpath = files(configurations.compile.files)
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.0"
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+task('jacocoReports') {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports for all variants"
+}
+
+task('jacocoVerifications') {
+    group = "Verification"
+    description = "Generate Jacoco coverage reports for all variants"
+}
+
+variants().all { variant ->
+    def params = prepareJacocoParams(variant)
+    def reportTask = createReportTask(params)
+    def verificationTask = createVerificationTask(params)
+    verificationTask.dependsOn reportTask
+    jacocoReports.dependsOn reportTask
+}
+
+def prepareJacocoParams(variant) {
+    def params = [:]
+    params.variantName = variant.name
+    params.variantCapName = variant.name.capitalize()
+    params.fileFilter = [ '**/R.class',
+                          '**/R$*.class',
+                          '**/BuildConfig.*',
+                          '**/Manifest*.*',
+                          '**/*Test*.*',
+                          'android/**/*.*',
+                          // '**/App*.*',
+                          // '**/*Activity*.*',
+    ]
+    params.classDirectories = files([fileTree(
+            dir: variant.javaCompiler.destinationDir,
+            excludes: params.fileFilter
+    ) + fileTree(
+            dir: "$buildDir/tmp/kotlin-classes/$params.variantName",
+            excludes: params.fileFilter
+    )])
+
+    params.sourceDirectories = files([
+            "src/main/java", "src/main/kotlin",
+            "src/$params.variantName/java", "src/$params.variantName/kotlin"
+    ])
+    println("${buildDir}/jacoco/test${params.variantCapName}UnitTest.exec")
+    params.executionData = files("${buildDir}/jacoco/test${params.variantCapName}UnitTest.exec")
+    return params
+}
+
+def createReportTask(params) {
+    return task("jacoco${params.variantCapName}Report", type: JacocoReport, dependsOn: "test${params.variantCapName}UnitTest") {
+        group = "Reporting"
+        description = "Generate Jacoco coverage reports for $params.variantCapName"
+        reports {
+            xml.enabled = true
+            html.enabled = true
+            csv.enabled = false
+        }
+        classDirectories = params.classDirectories
+        sourceDirectories = params.sourceDirectories
+        executionData = params.executionData
+    }
+}
+
+def createVerificationTask(params) {
+    return task("jacoco${params.variantCapName}Verification", type: JacocoCoverageVerification) {
+        sourceDirectories = params.sourceDirectories
+        classDirectories = params.classDirectories
+        executionData = params.executionData
+        violationRules {
+            failOnViolation true
+            rule {
+                element = 'PACKAGE'
+                includes = ['com.myapp.domain.*']
+                excludes = ['com.myapp.domain.entity']
+                limit {
+                    counter = 'CLASS'
+                    value = 'MISSEDCOUNT'
+                    maximum = 0
+                }
+            }
+            rule {
+                element = 'CLASS'
+                includes = ['com.myapp.domain.*']
+                excludes = ['com.myapp.domain.entity.*']
+                limit {
+                    counter = 'INSTRUCTION'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.8
+                }
+            }
+        }
+    }
+}
+
+def variants() {
+    if (project.android.hasProperty('libraryVariants')) {
+        return project.android.libraryVariants
+    } else {
+        return project.android.applicationVariants
     }
 }
