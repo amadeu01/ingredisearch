@@ -43,7 +43,7 @@ before_install:
   - which avdmanager
   - sdkmanager --list
   - touch keystore.properties
-  - echo "FOOD2FORK_API_KEY="$FOOD2FORK_API_KEY"" >> keystore.properties
+  - echo "FOOD2FORK_API_KEY="\"$FOOD2FORK_API_KEY\""" >> keystore.properties
   - chmod +x gradlew
   - "./gradlew dependencies || true"
 
