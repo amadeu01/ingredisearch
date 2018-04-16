@@ -47,11 +47,6 @@ before_install:
   - chmod +x gradlew
   - "./gradlew dependencies || true"
 
-before_script:
-  - echo no | avdmanager create avd --force --name test --abi google_apis/x86_64 --package 'system-images;android-23;google_apis;x86_64'
-  - emulator -list-avds
-  - $ANDROID_HOME/tools/emulator -avd test -no-audio -no-window
-
 script:
   - "./gradlew clean build jacocoDebugReport --stacktrace"
 
