@@ -48,7 +48,7 @@ before_install:
   - "./gradlew dependencies || true"
 
 script:
-  - "./gradlew clean build jacocoDebugReport --stacktrace"
+  - "./gradlew clean build jacocoTestReport"
 
 before_deploy:
   - git config --local user.name "Amadeu Cavalcante"
