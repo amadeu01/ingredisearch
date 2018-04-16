@@ -15,7 +15,7 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-26.0.2
+    - build-tools-26.0.1
     - android-27
     - android-$ANDROID_API_LEVEL
     - android-$EMULATOR_API_LEVEL
@@ -37,8 +37,8 @@ cache:
 
 before_install:
   - yes | sdkmanager "platforms;android-27"
-  - echo yes | sdkmanager "build-tools;27.0.1"
-  - echo yes | sdkmanager "build-tools;27.0.3"
+  - yes | sdkmanager "build-tools;27.0.1"
+  - yes | sdkmanager "build-tools;27.0.3"
   - sdkmanager --version
   - yes | sdkmanager --licenses
   - touch keystore.properties
